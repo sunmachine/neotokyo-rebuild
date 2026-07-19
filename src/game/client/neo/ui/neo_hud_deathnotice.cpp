@@ -212,6 +212,7 @@ void CNEOHud_DeathNotice::Init( void )
 	ListenForGameEvent( "ghost_capture" );
 	ListenForGameEvent( "vip_extract" );
 	ListenForGameEvent( "vip_death" );
+	ListenForGameEvent( "round_start" );
 }
 
 //-----------------------------------------------------------------------------
@@ -716,6 +717,16 @@ void CNEOHud_DeathNotice::RetireExpiredDeathNotices( void )
 ConVar cl_neo_hud_extended_killfeed("cl_neo_hud_extended_killfeed", "1", FCVAR_ARCHIVE, "Show extra events in killfeed. 1 = Objectives, 2 = Objectives and rank-ups", true, 0, true, 2);
 void CNEOHud_DeathNotice::FireGameEvent(IGameEvent* event)
 {
+	auto eventName = event->GetName();
+	if (!Q_stricmp(eventName, "round_start"))
+	{
+		// The local player's kill record and killer info are per-round, clear
+		// them on the round boundary regardless of the killfeed settings below
+		NeoUserIDsLocalKilledClear();
+		V_memset(&g_neoKillerInfos, 0, sizeof(CNEOKillerInfos));
+		return;
+	}
+
 	if (!g_PR)
 		return;
 
@@ -729,7 +740,6 @@ void CNEOHud_DeathNotice::FireGameEvent(IGameEvent* event)
 		m_DeathNotices.Remove(0);
 	}
 
-	auto eventName = event->GetName();
 	if (!Q_stricmp(eventName, "player_death"))
 	{
 		AddPlayerDeath(event);

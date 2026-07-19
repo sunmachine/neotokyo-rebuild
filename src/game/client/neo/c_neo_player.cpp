@@ -1208,9 +1208,6 @@ void C_NEO_Player::PreThink( void )
 			CLocalPlayerFilter filter;
 			enginesound->SetPlayerDSP(filter, 0, true);
 
-			NeoUserIDsLocalKilledClear();
-			V_memset(&g_neoKillerInfos, 0, sizeof(CNEOKillerInfos));
-
 			// Reset the cache of other players crosshair data on spawning in
 			if (CHudCrosshair *crosshair = GET_HUDELEMENT(CHudCrosshair))
 			{
