@@ -48,7 +48,6 @@
 #include "rendertexture.h"
 #include "ivieweffects.h"
 #include "iachievementmgr.h"
-#include "c_neo_killer_infos.h"
 #include <vgui/ILocalize.h>
 #include <tier3.h>
 
@@ -479,7 +478,6 @@ C_NEO_Player::C_NEO_Player()
 	m_flTocFactor = 0.15f;
 
 	memset(m_szNeoNameWDupeIdx, 0, sizeof(m_szNeoNameWDupeIdx));
-	if (IsLocalPlayer()) NeoUserIDsLocalKilledClear();
 	m_szNameDupePos = 0;
 }
 
@@ -1626,7 +1624,6 @@ void C_NEO_Player::Spawn( void )
 		m_rfAttackersAccumlator.GetForModify(i) = 0.0f;
 		m_rfAttackersHits.GetForModify(i) = 0;
 	}
-	if (IsLocalPlayer()) NeoUserIDsLocalKilledClear();
 
 	Weapon_SetZoom(false);
 
