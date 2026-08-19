@@ -355,6 +355,14 @@ bool CNEO_Player::RequestSetLoadout(int loadoutNumber)
 		return false;
 	}
 
+	// XP eligibility first, so ineligible requests fall back to the default
+	// slot without paying for the validation entity below
+	if (loadoutNumber+1 > CNEOWeaponLoadout::GetNumberOfLoadoutWeapons(CNEOWeaponLoadout::GetEffectiveXP(m_iXP), iLoadoutClass))
+	{
+		DevMsg("Insufficient XP for %s\n", pszWepName);
+		return RequestSetLoadout(0);
+	}
+
 	EHANDLE pEnt;
 	pEnt = CreateEntityByName(pszWepName);
 
@@ -387,13 +395,6 @@ bool CNEO_Player::RequestSetLoadout(int loadoutNumber)
 		Assert(false);
 		Warning("CNEO_Player::RequestSetLoadout: Not a Neo primary weapon: %s\n", pszWepName);
 		result = false;
-	}
-
-	if (loadoutNumber+1 > CNEOWeaponLoadout::GetNumberOfLoadoutWeapons(CNEOWeaponLoadout::GetEffectiveXP(m_iXP),
-			sv_neo_dev_loadout.GetBool() ? NEO_LOADOUT_DEV : classChosen))
-	{
-		DevMsg("Insufficient XP for %s\n", pszWepName);
-		result = RequestSetLoadout(0);
 	}
 
 	if (result)
